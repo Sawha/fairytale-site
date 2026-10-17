@@ -1,0 +1,36 @@
+name: new file
+
+on:
+  schedule:
+    # Щодня о 05:00 UTC = 07:00 Київ (UTC+2)
+    - cron: '0 5 * * *'
+  
+  # Дозволяємо запускати вручну (для тестування)
+  workflow_dispatch:
+
+jobs:
+  generate-story:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Генеруємо нову казку
+        run: |
+          echo "🧚 Запускаємо генерацію казки..."
+          RESPONSE=$(curl -s -w "\n%{http_code}" -L \
+            -X GET\
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            "${{ secrets.VERCEL_APP_URL }}/api/generate-story")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          
+          echo "HTTP статус: $HTTP_CODE"
+          echo "Відповідь: $BODY"
+          
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Помилка генерації казки!"
+            exit 1
+          fi
+          
+          echo "✅ Казку успішно додано!"
