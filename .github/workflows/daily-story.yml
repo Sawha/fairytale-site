@@ -1,4 +1,4 @@
-name: Генерація щоденної казки
+name:new generatopn
 
 on:
   schedule:
