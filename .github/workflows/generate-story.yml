@@ -3,8 +3,6 @@ name: Генерація щоденної казки
 on:
   schedule:
     - cron: '0 5 * * *'
-    - cron: '0 9 * * *'
-    - cron: '0 15 * * *'
     - cron: '0 17 * * *'
   workflow_dispatch:
 
